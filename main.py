@@ -559,7 +559,11 @@ async def process_callback(user_id: str, payload: str, callback_id: str = None):
         await api.send_max_message(user_id, "🔮 Карты ждут твоих вопросов. Выбери, что мы узнаем сегодня:", keyboard=get_menu_keyboard())
 
 if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
+    # Создаём новый event loop и делаем его основным
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+
+    # Инициализируем базу данных в этом loop
     loop.run_until_complete(db.init_db())
 
     handler = WebhookHandler()
