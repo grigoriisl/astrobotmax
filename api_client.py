@@ -33,9 +33,8 @@ async def upload_local_image_to_max(file_path: str):
 
         form = aiohttp.FormData()
         try:
-            loop = asyncio.get_event_loop()
             with open(file_path, 'rb') as f:
-                file_data = await loop.run_in_executor(None, f.read)
+                file_data = await asyncio.to_thread(f.read)
 
             form.add_field('data', file_data, filename='card.jpg', content_type='image/jpeg')
 
