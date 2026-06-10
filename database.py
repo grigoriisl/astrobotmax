@@ -11,7 +11,12 @@ async def init_db():
         port=DB_PORT,
         database=DB_NAME,
         user=DB_USER,
-        password=DB_PASSWORD
+        password=DB_PASSWORD,
+        min_size=2,
+        max_size=20,
+        max_queries=50000,
+        max_inactive_connection_lifetime=300,
+        command_timeout=5
     )
     async with pool.acquire() as conn:
         await conn.execute('''
