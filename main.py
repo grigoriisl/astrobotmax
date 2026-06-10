@@ -559,17 +559,14 @@ async def process_callback(user_id: str, payload: str, callback_id: str = None):
         await api.send_max_message(user_id, "🔮 Карты ждут твоих вопросов. Выбери, что мы узнаем сегодня:", keyboard=get_menu_keyboard())
 
 if __name__ == "__main__":
-    # Создаём новый event loop и делаем его основным
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-
-    # Инициализируем базу данных в этом loop
-    loop.run_until_complete(db.init_db())
-
+    # Не создаём свой loop — позволим aiohttp создать
+    # Не вызываем db.init_db() здесь
     handler = WebhookHandler()
     app = handler.app
 
     async def on_startup(app):
+        # Инициализируем базу в правильном event loop
+        await db.init_db()
         res = await api.register_webhook(WEBHOOK_URL)
         logger.info(f"Подписка Webhook результат: {res}")
         asyncio.create_task(passive_credits_worker())
